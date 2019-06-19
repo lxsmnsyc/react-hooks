@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "react": "^16.8.6"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.3",
+    "rollup": "^1.15.6",
+    "terser": "^4.0.0"
+  },
+  "scripts": {
+    "build:cjs": "./node_modules/.bin/rollup src/index.js --file index.js --format cjs",
+    "build:iife": "./node_modules/.bin/rollup src/index.js --file dist/index.js --format iife --name \"ReactHooks\" -g \"react:React\"",
+    "build:minify": "./node_modules/.bin/terser dist/index.js --compress --mangle --output dist/index.min.js",
+    "build": "npm run build:cjs && npm run build:iife && npm run build:minify"
+  },
+  "name": "react-hooks",
+  "version": "0.1.0",
+  "description": "My collection of React Hooks",
+  "main": "index.js",
+  "repository": "https://github.com/LXSMNSYC/react-hooks.git",
+  "author": "Alexis Munsayac <alexis.munsayac@gmail.com>",
+  "license": "MIT",
+  "private": false
+}
