@@ -4,28 +4,20 @@ export default (interval, duration, delay) => {
   const [state, setState] = useState({ elapsed: 0, finished: false });
 
   useLayoutEffect(() => {
-    let interval;
-
-    const onFrame = (dt) => {
-      setState({
-        delta: dt,
-        elapsed: state.elapsed + dt,
-        finished: false,
-      });
-    };
+    let timer;
 
     let durationTimer;
     const onDuration = () => {
       durationTimer = setTimeout(() => {
-        clearInterval(interval);
+        clearInterval(timer);
         setState({
-          elapsed: state.elapsed,
+          elapsed: duration - state.elapsed,
           finished: true,
         });
       }, duration);
-      interval = setInterval(() => {
-        setState(() => {
-          elapsed: 
+      timer = setInterval(() => {
+        setState({
+          elapsed: state.elapsed + interval,
           finished: false,
         });
       }, interval);
@@ -36,7 +28,7 @@ export default (interval, duration, delay) => {
     return () => {
       clearTimeout(durationTimer);
       clearTimeout(delayTimer);
-      clearInterval(interval);
+      clearInterval(timer);
     };
   }, [interval, duration, delay]);
 
