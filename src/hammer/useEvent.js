@@ -20,7 +20,7 @@ export default (reference, event, options) => {
       return register(reference.current, event, options, setState);
     }
     return register(reference, event, options, setState);
-  }, [event, options]);
+  }, [reference, event]);
 
   return state;
 };
