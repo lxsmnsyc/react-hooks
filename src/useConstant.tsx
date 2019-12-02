@@ -27,12 +27,12 @@
  */
 import * as React from 'react';
 
-interface Value<T> {
+interface Constant<T> {
   value: T
 }
 
 export default function useConstant<T>(supplier: () => T): T {
-  const ref = React.useRef<Value<T> | undefined>();
+  const ref = React.useRef<Constant<T> | undefined>();
 
   if (!ref.current) {
     ref.current = {
