@@ -28,7 +28,7 @@
 import * as React from 'react';
 import useRefMounted from './useRefMounted';
 
-type PromiseWrapper = <T>(promise: Promise<T>) => Promise<T>;
+export type PromiseWrapper = <T>(promise: Promise<T>) => Promise<T>;
 
 export default function usePromise(): PromiseWrapper {
   const mounted = useRefMounted();
