@@ -39,15 +39,21 @@ export default function useDebouncedCallback<T extends any[]>(callback: Callback
     }
   });
   
-  return React.useCallback<Callback<T>>((...args: T) => {
+  return React.useMemo<Callback<T>>(() => {
     if (timer.current) {
       window.clearTimeout(timer.current);
     }
 
-    timer.current = window.setTimeout(() => {
-      callback(...args);
+    return (...args: T) => {
+      if (timer.current) {
+        window.clearTimeout(timer.current);
+      }
 
-      timer.current = undefined;
-    }, timeout);
+      timer.current = window.setTimeout(() => {
+        callback(...args);
+
+        timer.current = undefined;
+      }, timeout);
+    }
   }, [timeout, ...(deps || [])]);
 }
