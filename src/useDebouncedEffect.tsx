@@ -31,7 +31,7 @@ import useOnUnmount from './useOnUnmount';
 
 type Cleanup = (() => void | undefined) | void;
 
-export default function useDebouncedEffect(callback: React.EffectCallback, deps: React.DependencyList, timeout: number = 150) {
+export default function useDebouncedEffect(callback: React.EffectCallback, timeout: number = 150, deps?: React.DependencyList) {
   const cleanup = React.useRef<Cleanup>();
 
   useIsomorphicEffect(() => {
@@ -46,7 +46,7 @@ export default function useDebouncedEffect(callback: React.EffectCallback, deps:
     }, timeout);
 
     return () => clearTimeout(timer);
-  }, [timeout, ...deps]);
+  }, [timeout, ...(deps || [])]);
 
   useOnUnmount(() => {
     if (cleanup.current) {
