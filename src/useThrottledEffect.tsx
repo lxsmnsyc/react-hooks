@@ -30,7 +30,7 @@ import { useIsomorphicEffect } from './useIsomorphicEffect';
 import useOnUnmount from './useOnUnmount';
 
 
-export default function useThrottledEffect(callback: React.EffectCallback, deps: React.DependencyList, timeout: number = 150) {
+export default function useThrottledEffect(callback: React.EffectCallback, timeout: number = 150, deps?: React.DependencyList) {
   const timer = React.useRef<number | undefined>();
 
   useIsomorphicEffect(() => {
@@ -41,7 +41,7 @@ export default function useThrottledEffect(callback: React.EffectCallback, deps:
 
       return callback();
     }
-  }, [timeout, ...deps]);
+  }, [timeout, ...(deps || [])]);
 
   useOnUnmount(() => {
     if (timer.current) {
