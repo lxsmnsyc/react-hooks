@@ -39,13 +39,19 @@ export default function useThrottledCallback<T extends any[]>(callback: Callback
     }
   });
   
-  return React.useCallback<Callback<T>>((...args: T) => {
-    if (!timer.current) {
-      callback(...args);
+  return React.useMemo<Callback<T>>(() => {
+    if (timer.current) {
+      window.clearTimeout(timer.current);
+    }
 
-      timer.current = window.setTimeout(() => {
-        timer.current = undefined;
-      }, timeout);
+    return (...args: T) => {
+      if (!timer.current) {
+        callback(...args);
+
+        timer.current = window.setTimeout(() => {
+          timer.current = undefined;
+        }, timeout);
+      }
     }
   }, [timeout, ...(deps || [])]);
 }
