@@ -29,7 +29,7 @@ import * as React from 'react';
 
 type Cleanup = (() => void | undefined) | void;
 
-export default function useSyncEffect(effect: React.EffectCallback, deps: React.DependencyList) {
+export default function useSyncEffect(effect: React.EffectCallback, deps?: React.DependencyList) {
   const cleanup = React.useRef<Cleanup>();
 
   React.useMemo(() => {
