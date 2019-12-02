@@ -30,7 +30,7 @@ import useOnUnmount from './useOnUnmount';
 
 export type Callback<T extends any[]> = (...args: T) => void;
 
-export default function useDebouncedCallback<T extends any[]>(callback: Callback<T>, deps: React.DependencyList, timeout: number = 150) {
+export default function useDebouncedCallback<T extends any[]>(callback: Callback<T>, deps?: React.DependencyList, timeout: number = 150) {
   const timer = React.useRef<number | undefined>();
 
   useOnUnmount(() => {
@@ -49,5 +49,5 @@ export default function useDebouncedCallback<T extends any[]>(callback: Callback
 
       timer.current = undefined;
     }, timeout);
-  }, [timeout, ...deps]);
+  }, [timeout, ...(deps || [])]);
 }
