@@ -26,17 +26,12 @@
  * @copyright Alexis Munsayac 2019
  */
 import * as React from 'react';
-import { useIsomorphicEffect } from './useIsomorphicEffect';
+import useIsomorphicEffect from './useIsomorphicEffect';
 import useOnUnmount from './useOnUnmount';
 
 type Cleanup = (() => void | undefined) | void;
 
 export default function useThrottledEffect(callback: React.EffectCallback, timeout: number = 150, deps?: React.DependencyList) {
-  /**
-   * Holds the current duration
-   */
-  const duration = React.useRef(timeout);
-
   /**
    * Holds the timer reference
    */
@@ -47,49 +42,22 @@ export default function useThrottledEffect(callback: React.EffectCallback, timeo
    */
   const cleanup = React.useRef<Cleanup>();
 
-  /**
-   * Perform cleanups whenever timeout changes.
-   */
-  useIsomorphicEffect(() => {
-    if (cleanup.current) {
-      cleanup.current();
-      cleanup.current = undefined;
-    }
-    if (timer.current) {
-      clearTimeout(timer.current);
-    }
-    duration.current = timeout;
-  }, [ timeout ]);
+  const wrapped = React.useCallback(callback, deps || [{}]);
 
-  /**
-   * Run throttled side-effect
-   */
   useIsomorphicEffect(() => {
-    /**
-     * Check if timeout is not running
-     */
     if (!timer.current) {
-      /**
-       * If there is a cleanup, call it
-       */
       if (cleanup.current) {
         cleanup.current();
         cleanup.current = undefined;
       }
 
-      /**
-       * Setup timeout
-       */
       timer.current = window.setTimeout(() => {
         timer.current = undefined;
-      }, duration.current);
+      }, timeout);
 
-      /**
-       * Execute effect and get cleanup
-       */
-      cleanup.current = callback();
+      cleanup.current = wrapped();
     }
-  }, deps);
+  }, [timeout, wrapped]);
 
   /**
    * Perform cleanup on unmount
