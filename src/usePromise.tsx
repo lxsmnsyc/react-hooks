@@ -26,17 +26,25 @@
  * @copyright Alexis Munsayac 2019
  */
 import * as React from 'react';
-import useRefMounted from './useRefMounted';
+import useIsomorphicEffect from './useIsomorphicEffect';
 
 export type PromiseWrapper = <T>(promise: Promise<T>) => Promise<T>;
 
-export default function usePromise(): PromiseWrapper {
-  const mounted = useRefMounted();
+export default function usePromise(deps?: React.DependencyList): PromiseWrapper {
+  const ref = React.useRef(false);
+
+  useIsomorphicEffect(() => {
+    ref.current = true;
+
+    return () => {
+      ref.current = false;
+    };
+  }, deps);
 
   return React.useCallback((promise: Promise<any>) => new Promise((resolve, reject) => {
     promise.then(
-      value => mounted.current && resolve(value),
-      error => mounted.current && reject(error),
+      value => ref.current && resolve(value),
+      error => ref.current && reject(error),
     );
-  }), []);
+  }), deps || [{}]);
 }
