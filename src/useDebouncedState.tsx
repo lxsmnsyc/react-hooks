@@ -43,22 +43,16 @@ export default function useDebouncedState<T>(timeout: number = 150, initialState
     }
   });
 
-  const set = React.useMemo<React.Dispatch<React.SetStateAction<T>>>(() => {
+  const set = React.useCallback<React.Dispatch<React.SetStateAction<T>>>((value) => {
     if (timer.current) {
       window.clearTimeout(timer.current);
     }
-    
-    return (value) => {
-      if (timer.current) {
-        window.clearTimeout(timer.current);
-      }
 
-      timer.current = window.setTimeout(() => {
-        setState(value);
+    timer.current = window.setTimeout(() => {
+      setState(value);
 
-        timer.current = undefined;
-      }, timeout);
-    }
+      timer.current = undefined;
+    }, timeout);
   }, [ timeout ]);
   
   return [state, set];
