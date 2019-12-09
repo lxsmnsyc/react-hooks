@@ -29,6 +29,15 @@ import useConstant from './useConstant';
 
 export type ConstantCallback<T extends any[], R> = (...args: T) => R; 
 
+/**
+ * Hook for producing a memoized callback that
+ * remains constant throughout the component
+ * lifecycle.
+ * @category Hooks
+ * @param callback 
+ * @typeparam T types of the callback parameters
+ * @typeparam R type of the value returned by the callback
+ */
 export default function useConstantCallback<T extends any[], R>(callback: ConstantCallback<T, R>): ConstantCallback<T, R> {
   return useConstant(() => callback);
 }
