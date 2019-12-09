@@ -29,7 +29,5 @@ import * as React from 'react';
 import useSyncEffect from './useSyncEffect';
 
 export default function useSyncEffectOnce(callback: React.EffectCallback) {
-  useSyncEffect(() => {
-    return callback();
-  }, []);
+  useSyncEffect(callback, []);
 }
