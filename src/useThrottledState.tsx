@@ -42,21 +42,14 @@ export default function useThrottledState<T>(timeout: number = 150, initialState
       window.clearTimeout(timer.current);
     }
   });
-
   
-  const set = React.useMemo<React.Dispatch<React.SetStateAction<T>>>(() => {
-    if (timer.current) {
-      window.clearTimeout(timer.current);
-    }
-    
-    return (value) => {
-      if (!timer.current) {
-        setState(value);
-    
-        timer.current = window.setTimeout(() => {
-          timer.current = undefined;
-        }, timeout);
-      }
+  const set = React.useCallback<React.Dispatch<React.SetStateAction<T>>>((value) => {
+    if (!timer.current) {
+      setState(value);
+  
+      timer.current = window.setTimeout(() => {
+        timer.current = undefined;
+      }, timeout);
     }
   }, [ timeout ]);
   
