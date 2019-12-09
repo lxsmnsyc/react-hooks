@@ -28,7 +28,5 @@
 import * as React from 'react';
 
 export default function useLayoutEffectOnce(callback: React.EffectCallback) {
-  React.useLayoutEffect(() => {
-    return callback();
-  }, []);
+  React.useLayoutEffect(callback, []);
 }
