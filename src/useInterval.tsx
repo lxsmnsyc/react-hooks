@@ -26,14 +26,16 @@
  * @copyright Alexis Munsayac 2019
  */
 import * as React from 'react';
-import { useIsomorphicEffect } from './useIsomorphicEffect';
+import useIsomorphicEffect from './useIsomorphicEffect';
 
 export default function useInterval(callback: () => void, timeout: number, deps?: React.DependencyList) {
+  const wrapped = React.useCallback(callback, deps || [{}]);
+  
   useIsomorphicEffect(() => {
     const timer = window.setInterval(() => {
-      callback();
+      wrapped();
     }, timeout);
 
     return () => window.clearInterval(timer);
-  }, [callback, timeout, ...(deps || [])]);
+  }, [wrapped, timeout]);
 }
