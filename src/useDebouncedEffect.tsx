@@ -26,13 +26,21 @@
  * @copyright Alexis Munsayac 2019
  */
 import * as React from 'react';
-import { useIsomorphicEffect } from './useIsomorphicEffect';
+import useIsomorphicEffect from './useIsomorphicEffect';
 import useOnUnmount from './useOnUnmount';
 
 type Cleanup = (() => void | undefined) | void;
 
+/**
+ * A hook for 
+ * @param callback
+ * @param timeout 
+ * @param deps 
+ */
 export default function useDebouncedEffect(callback: React.EffectCallback, timeout: number = 150, deps?: React.DependencyList) {
   const cleanup = React.useRef<Cleanup>();
+
+  const wrapped = React.useCallback(callback, deps || [{}]);
 
   useIsomorphicEffect(() => {
     if (cleanup.current) {
@@ -46,7 +54,7 @@ export default function useDebouncedEffect(callback: React.EffectCallback, timeo
     }, timeout);
 
     return () => clearTimeout(timer);
-  }, [timeout, ...(deps || [])]);
+  }, [timeout, wrapped]);
 
   useOnUnmount(() => {
     if (cleanup.current) {
