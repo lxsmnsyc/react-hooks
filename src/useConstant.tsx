@@ -31,6 +31,15 @@ interface Constant<T> {
   value: T
 }
 
+/**
+ * Hook for producing memoized value that
+ * remains constant throughout the component
+ * lifecycle.
+ * 
+ * @category Hooks
+ * @param supplier
+ * @typeparam type of the value
+ */
 export default function useConstant<T>(supplier: () => T): T {
   const ref = React.useRef<Constant<T> | undefined>();
 
