@@ -28,32 +28,58 @@
 import * as React from 'react';
 import useOnUnmount from './useOnUnmount';
 
+/**
+ * 
+ */
 export type Callback<T extends any[]> = (...args: T) => void;
 
-export default function useDebouncedCallback<T extends any[]>(callback: Callback<T>, deps?: React.DependencyList, timeout: number = 150) {
+/**
+ * Hook for producing a memoized debounced callback, which receives
+ * arguments and runs the callback after a certain amount of time.
+ * @category Hooks
+ * @param callback 
+ * @param timeout
+ * @param deps  
+ * @typeparam T type of the parameters of the callback
+ */
+export default function useDebouncedCallback<T extends any[]>(callback: Callback<T>, timeout: number = 150, deps?: React.DependencyList) {
+  /**
+   * Reference for the timer schedule
+   */
   const timer = React.useRef<number | undefined>();
 
+  /**
+   * Cleanup logic
+   */
   useOnUnmount(() => {
     if (timer.current) {
       window.clearTimeout(timer.current);
     }
   });
+
+  /**
+   * Wrap a callback
+   */
+  const wrapped = React.useCallback(callback, deps || [{}]);
   
-  return React.useMemo<Callback<T>>(() => {
+  /**
+   * Return the memoized callback
+   */
+  return React.useCallback<Callback<T>>((...args: T) => {
+    /**
+     * Clear the timeout when called
+     */
     if (timer.current) {
       window.clearTimeout(timer.current);
     }
 
-    return (...args: T) => {
-      if (timer.current) {
-        window.clearTimeout(timer.current);
-      }
+    /**
+     * Reschedule
+     */
+    timer.current = window.setTimeout(() => {
+      wrapped(...args);
 
-      timer.current = window.setTimeout(() => {
-        callback(...args);
-
-        timer.current = undefined;
-      }, timeout);
-    }
-  }, [timeout, ...(deps || [])]);
+      timer.current = undefined;
+    }, timeout);
+  }, [timeout, wrapped]);
 }
