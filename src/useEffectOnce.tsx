@@ -28,7 +28,5 @@
 import * as React from 'react';
 
 export default function useEffectOnce(callback: React.EffectCallback) {
-  React.useEffect(() => {
-    return callback();
-  }, []);
+  React.useEffect(callback, []);
 }
