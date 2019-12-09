@@ -25,11 +25,11 @@
  * @author Alexis Munsayac <alexis.munsayac@gmail.com>
  * @copyright Alexis Munsayac 2019
  */
-import * as React from 'react';
 import useRefMounted from './useRefMounted';
+import useConstantCallback from './useConstantCallback';
 
 export default function useMountedState(): () => boolean {
   const mounted = useRefMounted();
 
-  return React.useCallback(() => mounted.current, []);
+  return useConstantCallback(() => mounted.current);
 }
