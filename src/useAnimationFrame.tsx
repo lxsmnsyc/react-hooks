@@ -26,29 +26,63 @@
  * @copyright Alexis Munsayac 2019
  */
 import * as React from 'react';
-import { useIsomorphicEffect } from './useIsomorphicEffect';
+import useIsomorphicEffect from './useIsomorphicEffect';
 
 interface AnimationFrameHandler {
   current?: number;
 }
 
-export default function useAnimationFrame(callback: (dt: number) => void, timeout: number, deps?: React.DependencyList) {
+/**
+ * Hook to register a side-effect that runs every frame.
+ * 
+ * @category Hooks
+ * @param callback
+ * @param deps 
+ */
+export default function useAnimationFrame(callback: (dt: number) => void, deps?: React.DependencyList) {
+  /**
+   * Memoize callback
+   */
+  const effect = React.useCallback(callback, deps || []);
+  
+  /**
+   * Register an isomorphic effect
+   */
   useIsomorphicEffect(() => {
-    const timer: AnimationFrameHandler = {}
+    /**
+     * Create a reference handler for the animation frame
+     * schedule
+     */
+    const timer: AnimationFrameHandler = {};
 
     function schedule() {
+      /**
+       *  Schedule the side effect
+       */
       timer.current = requestAnimationFrame((time) => {
-        callback(time);
+        /**
+         * Run the side-effect
+         */
+        effect(time);
+        /**
+         * Re-schedule
+         */
         schedule();
       });
     }
 
+    /**
+     * Initial schedule
+     */
     schedule();
 
+    /**
+     * Cleanup for the scheduled effect
+     */
     return () => {
       if (timer.current) {
         cancelAnimationFrame(timer.current);
       }
     };
-  }, [callback, timeout, ...(deps || [])]);
+  }, [callback, effect]);
 }
