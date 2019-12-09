@@ -26,7 +26,7 @@
  * @copyright Alexis Munsayac 2019
  */
 import * as React from 'react';
-import { useIsomorphicEffect } from './useIsomorphicEffect';
+import useIsomorphicEffect from './useIsomorphicEffect';
 
 export default function usePrevious<T>(value: T): T | undefined {
   const ref = React.useRef<T | undefined>();
